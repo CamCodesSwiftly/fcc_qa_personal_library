@@ -12,10 +12,17 @@ module.exports = function (app) {
 	let container = [
 		{
 			comments: ["first comment", "second comment", "third comment"],
-			_id: new ObjectId().toString(),
+			_id: "65ef2da40fac29acae53b4c4",
 			title: "Sapiens",
 			commentcount: 3,
 			__v: 3,
+		},
+		{
+			comments: ["Gandalf is a G"],
+			_id: new ObjectId().toString(),
+			title: "The Lord of the Rings",
+			commentcount: 1,
+			__v: 1,
 		},
 	];
 
@@ -34,16 +41,16 @@ module.exports = function (app) {
 			}
 
 			//save the book
+			let generatedId = new ObjectId().toString();
 			let book = {
 				comments: [],
-				_id: new ObjectId().toString(),
+				_id: generatedId,
 				title: req.body.title,
 				commentcount: 0,
 				__v: 0,
 			};
 			container.push(book);
 			//response will contain new book object including atleast _id and title
-			let generatedId = new ObjectId().toString();
 			res.json({
 				_id: generatedId,
 				title: req.body.title,
@@ -56,8 +63,20 @@ module.exports = function (app) {
 
 	app.route("/api/books/:id")
 		.get(function (req, res) {
+			console.log("get :id route:");
+			console.log(req.params.id);
+			// console.log(container);
 			let bookid = req.params.id;
 			//json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
+			let foundBook;
+			foundBook = container.find((book) => book._id === bookid);
+			console.log(foundBook);
+			if (foundBook === "undefined" || !foundBook) {
+				console.log("the book does not exist");
+				return res.send("no book exists");
+			}
+
+			return res.json(foundBook);
 		})
 
 		.post(function (req, res) {

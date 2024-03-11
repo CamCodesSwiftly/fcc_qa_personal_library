@@ -105,25 +105,76 @@ suite("Functional Tests", function () {
 			}
 		);
 
-		// suite('GET /api/books => array of books', function(){
+		suite("GET /api/books => array of books", function () {
+			test("Test GET /api/books", function (done) {
+				chai.request(server)
+					.get("/api/books")
+					// Provide the desired query parameters
+					.end(function (err, res) {
+						assert.equal(err, null); // No error should occur
+						assert.equal(res.status, 200);
+						// Check if response is an array
+						assert.isArray(res.body, "no array was returned");
 
-		//   test('Test GET /api/books',  function(done){
-		//     //done();
-		//   });
+						//TODO: Some useful assertions
+						// console.log(res.body);
+						done();
+					});
+			});
+		});
 
-		// });
+		suite("GET /api/books/[id] => book object with [id]", function () {
+			test("Test GET /api/books/[id] with id not in db", function (done) {
+				chai.request(server)
+					.get("/api/books/asdpigowehig14")
+					.end(function (err, res) {
+						assert.equal(err, null); // No error should occur
+						assert.equal(res.status, 200);
+						// Check for correct error message
+						assert.equal(
+							res.text,
+							"no book exists",
+							"the id does not exist"
+						);
+						// console.log("output text: ");
+						// console.log(res.text);
+						done();
+					});
+			});
 
-		// suite('GET /api/books/[id] => book object with [id]', function(){
+			test("Test GET /api/books/[id] with valid id in db", function (done) {
+				chai.request(server)
+					.get("/api/books/65ef2da40fac29acae53b4c4")
+					.end(function (err, res) {
+						assert.equal(err, null); // No error should occur
+						assert.equal(res.status, 200);
+						// Check for existence of title, _id and comments
+						assert.property(
+							res.body,
+							"title",
+							"no title field in return object"
+						);
+						assert.property(
+							res.body,
+							"_id",
+							"no _id field in return object"
+						);
+						assert.property(
+							res.body,
+							"comments",
+							"no comments field in return object"
+						);
+						//is comments an array?
+						assert.isArray(
+							res.body.comments,
+							"comments is not an array"
+						);
+						// console.log(res.body);
 
-		//   test('Test GET /api/books/[id] with id not in db',  function(done){
-		//     //done();
-		//   });
-
-		//   test('Test GET /api/books/[id] with valid id in db',  function(done){
-		//     //done();
-		//   });
-
-		// });
+						done();
+					});
+			});
+		});
 
 		// suite('POST /api/books/[id] => add comment/expect book object with id', function(){
 
