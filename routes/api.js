@@ -24,6 +24,13 @@ module.exports = function (app) {
 			commentcount: 1,
 			__v: 1,
 		},
+		{
+			comments: [],
+			_id: "15ef319754658168f26f8594",
+			title: "The Lord of the Rings",
+			commentcount: 0,
+			__v: 0,
+		},
 	];
 
 	app.route("/api/books")
@@ -63,16 +70,15 @@ module.exports = function (app) {
 
 	app.route("/api/books/:id")
 		.get(function (req, res) {
-			console.log("get :id route:");
-			console.log(req.params.id);
+			// console.log("get :id route:");
+			// console.log(req.params.id);
 			// console.log(container);
 			let bookid = req.params.id;
 			//json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
-			let foundBook;
-			foundBook = container.find((book) => book._id === bookid);
-			console.log(foundBook);
+			let foundBook = container.find((book) => book._id === bookid);
+			// console.log(foundBook);
 			if (foundBook === "undefined" || !foundBook) {
-				console.log("the book does not exist");
+				// console.log("the book does not exist");
 				return res.send("no book exists");
 			}
 
@@ -82,7 +88,29 @@ module.exports = function (app) {
 		.post(function (req, res) {
 			let bookid = req.params.id;
 			let comment = req.body.comment;
+			// console.log("show me the request object please");
+			// console.log(req.body.comment);
+
+			// is there a comment?
+			if (comment === "undefined" || !comment) {
+				// console.log("i wanna see that it works");
+				// console.log(comment);
+				return res.send("missing required field comment");
+			}
+
+			// is the book found with the id?
+			let foundBook = container.find((book) => book._id === bookid);
+			// console.log(foundBook);
+			if (foundBook === "undefined" || !foundBook) {
+				// console.log("the book does not exist");
+				return res.send("no book exists");
+			}
+
+			// add the comment
+			foundBook.comments.push(comment);
+
 			//json res format same as .get
+			return res.json(foundBook);
 		})
 
 		.delete(function (req, res) {

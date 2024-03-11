@@ -176,21 +176,131 @@ suite("Functional Tests", function () {
 			});
 		});
 
-		// suite('POST /api/books/[id] => add comment/expect book object with id', function(){
+		suite(
+			"POST /api/books/[id] => add comment/expect book object with id",
+			function () {
+				test("Test POST /api/books/[id] with comment", function (done) {
+					chai.request(server)
+						.post("/api/books/15ef319754658168f26f8594")
+						.send({
+							_id: "15ef319754658168f26f8594",
+							comment:
+								"Made my mum by a special version of the book for nearly 100DM. Awesome!",
+						}) // Provide the desired query parameters
+						.end(function (err, res) {
+							// console.log(res.body);
+							assert.equal(err, null); // No error should occur
+							assert.equal(res.status, 200);
+							// check if it is an object
+							assert.isObject(
+								res.body,
+								"response is not an object"
+							);
+							// Check for existence of all fields
+							assert.property(
+								res.body,
+								"comments",
+								"no comments field in response object"
+							);
+							assert.property(
+								res.body,
+								"_id",
+								"no _id field in response object"
+							);
+							assert.property(
+								res.body,
+								"title",
+								"no title field in response object"
+							);
+							assert.property(
+								res.body,
+								"commentcount",
+								"no commentcount field in response object"
+							);
+							assert.property(
+								res.body,
+								"__v",
+								"no __v field in response object"
+							);
+							// check data types
+							assert.isNumber(
+								res.body.commentcount,
+								"commentcount field should be a number"
+							);
+							assert.isNumber(
+								res.body.__v,
+								"__v field should be a number"
+							);
+							assert.isArray(
+								res.body.comments,
+								"comments field should be an array"
+							);
+							// check for contents
+							assert.equal(
+								res.body.comments.length > 0,
+								true,
+								"comments array should have at least 1 comment"
+							);
+							done();
+						});
+				});
 
-		//   test('Test POST /api/books/[id] with comment', function(done){
-		//     //done();
-		//   });
+				test("Test POST /api/books/[id] without comment field", function (done) {
+					chai.request(server)
+						.post("/api/books/15ef319754658168f26f8594")
+						.send({
+							_id: "15ef319754658168f26f8594",
+						}) // Provide the desired query parameters
+						.end(function (err, res) {
+							// console.log("this is the test side");
+							// console.log(res.text);
+							assert.equal(err, null); // No error should occur
+							assert.equal(res.status, 200);
+							// check for return message
+							assert.property(
+								res,
+								"text",
+								"res.text should exist"
+							);
+							// check for the correct content of the message
+							assert.equal(
+								res.text,
+								"missing required field comment",
+								"res.text should contain the message: missing required field comment"
+							);
+							done();
+						});
+				});
 
-		//   test('Test POST /api/books/[id] without comment field', function(done){
-		//     //done();
-		//   });
-
-		//   test('Test POST /api/books/[id] with comment, id not in db', function(done){
-		//     //done();
-		//   });
-
-		// });
+				test("Test POST /api/books/[id] with comment, id not in db", function (done) {
+					chai.request(server)
+						.post("/api/books/asdgasdg1212362446")
+						.send({
+							_id: "asdgasdg1212362446",
+							comment: "female rock sounds interesting",
+						}) // Provide the desired query parameters
+						.end(function (err, res) {
+							// console.log("this is the test side");
+							// console.log(res.text);
+							assert.equal(err, null); // No error should occur
+							assert.equal(res.status, 200);
+							// check for return message
+							assert.property(
+								res,
+								"text",
+								"res.text should exist"
+							);
+							// check for the correct content of the message
+							assert.equal(
+								res.text,
+								"no book exists",
+								"res.text should contain the message: no book exists"
+							);
+							done();
+						});
+				});
+			}
+		);
 
 		// suite('DELETE /api/books/[id] => delete book object id', function() {
 
