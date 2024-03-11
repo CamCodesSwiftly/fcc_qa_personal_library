@@ -27,22 +27,27 @@ module.exports = function (app) {
 		})
 
 		.post(function (req, res) {
-			// console.log(req.body);
 			//title provided?
 			if (req.body.title === "undefined" || !req.body.title) {
 				// console.log("verläufst du dich hier rein?");
 				return res.send("missing required field title");
 			}
 
-			let title = req.body.title;
+			//save the book
+			let book = {
+				comments: [],
+				_id: new ObjectId().toString(),
+				title: req.body.title,
+				commentcount: 0,
+				__v: 0,
+			};
+			container.push(book);
 			//response will contain new book object including atleast _id and title
-
 			let generatedId = new ObjectId().toString();
-			let responseObject = {
+			res.json({
 				_id: generatedId,
 				title: req.body.title,
-			};
-			res.json(responseObject);
+			});
 		})
 
 		.delete(function (req, res) {
