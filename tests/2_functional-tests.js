@@ -76,8 +76,8 @@ suite("Functional Tests", function () {
 								"Endlich Nichtraucher!",
 								"req title and res title are not equal"
 							);
-							// console.log("output object: ");
-							// console.log(res.body);
+
+
 							done();
 						});
 				});
@@ -97,8 +97,8 @@ suite("Functional Tests", function () {
 								"missing required field title",
 								"req title and res title are not equal"
 							);
-							// console.log("output text: ");
-							// console.log(res.text);
+
+
 							done();
 						});
 				});
@@ -117,7 +117,7 @@ suite("Functional Tests", function () {
 						assert.isArray(res.body, "no array was returned");
 
 						//TODO: Some useful assertions
-						// console.log(res.body);
+
 						done();
 					});
 			});
@@ -136,8 +136,8 @@ suite("Functional Tests", function () {
 							"no book exists",
 							"the id does not exist"
 						);
-						// console.log("output text: ");
-						// console.log(res.text);
+
+
 						done();
 					});
 			});
@@ -169,7 +169,7 @@ suite("Functional Tests", function () {
 							res.body.comments,
 							"comments is not an array"
 						);
-						// console.log(res.body);
+
 
 						done();
 					});
@@ -187,8 +187,11 @@ suite("Functional Tests", function () {
 							comment:
 								"Made my mum by a special version of the book for nearly 100DM. Awesome!",
 						}) // Provide the desired query parameters
+						//TODO: Hier ist irgendwas komisch
+						//TODO: Kommentar müsste glaube ich an existierendes Buch
+						//TODO: drangehängt werden, aber es entsteht ein neues Buch
 						.end(function (err, res) {
-							// console.log(res.body);
+
 							assert.equal(err, null); // No error should occur
 							assert.equal(res.status, 200);
 							// check if it is an object
@@ -252,8 +255,8 @@ suite("Functional Tests", function () {
 							_id: "15ef319754658168f26f8594",
 						}) // Provide the desired query parameters
 						.end(function (err, res) {
-							// console.log("this is the test side");
-							// console.log(res.text);
+
+
 							assert.equal(err, null); // No error should occur
 							assert.equal(res.status, 200);
 							// check for return message
@@ -280,8 +283,8 @@ suite("Functional Tests", function () {
 							comment: "female rock sounds interesting",
 						}) // Provide the desired query parameters
 						.end(function (err, res) {
-							// console.log("this is the test side");
-							// console.log(res.text);
+
+
 							assert.equal(err, null); // No error should occur
 							assert.equal(res.status, 200);
 							// check for return message
@@ -302,16 +305,46 @@ suite("Functional Tests", function () {
 			}
 		);
 
-		// suite('DELETE /api/books/[id] => delete book object id', function() {
+		suite("DELETE /api/books/[id] => delete book object id", function () {
+			test("Test DELETE /api/books/[id] with valid id in db", function (done) {
+				chai.request(server)
+					.delete("/api/books/15ef319754658168f26f8594")
+					.end(function (err, res) {
 
-		//   test('Test DELETE /api/books/[id] with valid id in db', function(done){
-		//     //done();
-		//   });
 
-		//   test('Test DELETE /api/books/[id] with  id not in db', function(done){
-		//     //done();
-		//   });
+						assert.equal(err, null); // No error should occur
+						assert.equal(res.status, 200);
+						// check for return message
+						assert.property(res, "text", "res.text should exist");
+						// check for the correct content of the message
+						assert.equal(
+							res.text,
+							"delete successful",
+							"res.text should contain the message: delete successful"
+						);
+						done();
+					});
+			});
 
-		// });
+			test("Test DELETE /api/books/[id] with  id not in db", function (done) {
+				chai.request(server)
+					.delete("/api/books/blablabla123h9ysdg1")
+					.end(function (err, res) {
+
+
+						assert.equal(err, null); // No error should occur
+						assert.equal(res.status, 200);
+						// check for return message
+						assert.property(res, "text", "res.text should exist");
+						// check for the correct content of the message
+						assert.equal(
+							res.text,
+							"no book exists",
+							"res.text should contain the message: no book exists"
+						);
+						done();
+					});
+			});
+		});
 	});
 });

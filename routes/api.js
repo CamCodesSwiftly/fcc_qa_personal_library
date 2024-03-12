@@ -27,7 +27,7 @@ module.exports = function (app) {
 		{
 			comments: [],
 			_id: "15ef319754658168f26f8594",
-			title: "The Lord of the Rings",
+			title: "Die Essenz der Lehre Buddhas",
 			commentcount: 0,
 			__v: 0,
 		},
@@ -43,7 +43,7 @@ module.exports = function (app) {
 		.post(function (req, res) {
 			//title provided?
 			if (req.body.title === "undefined" || !req.body.title) {
-				// console.log("verläufst du dich hier rein?");
+
 				return res.send("missing required field title");
 			}
 
@@ -66,19 +66,21 @@ module.exports = function (app) {
 
 		.delete(function (req, res) {
 			//if successful response will be 'complete delete successful'
+			container = [];
+			res.send("complete delete successful");
 		});
 
 	app.route("/api/books/:id")
 		.get(function (req, res) {
-			// console.log("get :id route:");
-			// console.log(req.params.id);
-			// console.log(container);
+
+
+
 			let bookid = req.params.id;
 			//json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
 			let foundBook = container.find((book) => book._id === bookid);
-			// console.log(foundBook);
+
 			if (foundBook === "undefined" || !foundBook) {
-				// console.log("the book does not exist");
+
 				return res.send("no book exists");
 			}
 
@@ -88,21 +90,21 @@ module.exports = function (app) {
 		.post(function (req, res) {
 			let bookid = req.params.id;
 			let comment = req.body.comment;
-			// console.log("show me the request object please");
-			// console.log(req.body.comment);
+
+
 
 			// is there a comment?
 			if (comment === "undefined" || !comment) {
-				// console.log("i wanna see that it works");
-				// console.log(comment);
+
+
 				return res.send("missing required field comment");
 			}
 
 			// is the book found with the id?
 			let foundBook = container.find((book) => book._id === bookid);
-			// console.log(foundBook);
+
 			if (foundBook === "undefined" || !foundBook) {
-				// console.log("the book does not exist");
+
 				return res.send("no book exists");
 			}
 
@@ -115,6 +117,15 @@ module.exports = function (app) {
 
 		.delete(function (req, res) {
 			let bookid = req.params.id;
+
+			let foundBook = container.find((book) => book._id === bookid);
+
+			if (foundBook === "undefined" || !foundBook) {
+
+				return res.send("no book exists");
+			}
+
+			return res.send("delete successful");
 			//if successful response will be 'delete successful'
 		});
 };
